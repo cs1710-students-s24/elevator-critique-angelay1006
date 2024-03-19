@@ -155,8 +155,14 @@ pred forwardProgress[e: Elevator] {
 }
 
 /* PROCEDURE 1 TESTS **********************************************************/
+// checks if elevator can stay still when there aren't any requests
 pred stayStillWhenNoRequests[e: Elevator] {
     no e.requests implies stayStill[e]
+}
+
+// checks if elevator always moves/never stays still
+pred alwaysMoves[e: Elevator] {
+    always not stayStill[e]
 }
 
 /*
@@ -169,6 +175,9 @@ test expect {
 	-- TODO: test procedure1 properties here
 	fp1: {traces and always procedure1[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 	stayStillWhenNoRequests1: {traces and always procedure1[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
+
+	// note: why is this not unsat? we know it's not theorem.  
+	// alwaysMoves1: {traces and always procedure1[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is sat
 
 }
 
@@ -186,6 +195,8 @@ test expect {
 	// but forge finds a counterexample
 	// stayStillWhenNoRequests2: {traces and always procedure2[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is unsat
 
+	alwaysMoves2: {traces and always procedure2[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is theorem
+
 }
 
 /* PROCEDURE 3 TESTS **********************************************************/
@@ -198,6 +209,9 @@ test expect {
 	-- TODO: test procedure3 properties here
 	fp3: {traces and always procedure3[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 	stayStillWhenNoRequests3: {traces and always procedure3[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
+
+	// should also be unsat since this procedure stays still with no requests, so it should never be always moving
+	// alwaysMoves3: {traces and always procedure3[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is unsat
 }
 
 /* PROCEDURE 4 TESTS **********************************************************/
@@ -211,6 +225,9 @@ test expect {
 	-- TODO: test procedure4 properties here
 	fp4: {traces and always procedure4[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 	stayStillWhenNoRequests4: {traces and always procedure4[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
+
+	// should also be unsat since this procedure stays still with no requests, so it should never be always moving
+	// alwaysMoves4: {traces and always procedure4[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is unsat
 }
 
 /* PROCEDURE 5 TESTS **********************************************************/
@@ -223,6 +240,9 @@ test expect {
 	-- TODO: test procedure5 properties here
 	fp5: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 	stayStillWhenNoRequests5: {traces and always procedure5[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
+
+	// should also be unsat since this procedure stays still with no requests, so it should never be always moving
+	// alwaysMoves5: {traces and always procedure5[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is unsat
 }
 
 
