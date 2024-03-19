@@ -14,26 +14,46 @@ open "elevator.frg"
 
 -- Procedure 1:
 --   TODO:
-/* This procedure makes the elevator remain on the same floor if there are no pending requests, 
-   which also implies that it should always be moving if there's at least one request. If 
-   the current floor has pending requests, the elevator must always pick up passengers. 
-   The movement of the elevator is also enforced: the elevator shouldn't move up if there are floors 
-   below its current position, and it shouldn't move down if there are no requests from floors below. 
-   The order of getting to requests is therefore bottom to top. 
+/* 
+	This procedure makes the elevator remain on the same floor if there are no pending requests, 
+	which also implies that it should always be moving if there's at least one request. If 
+	the current floor has pending requests, the elevator must always pick up passengers. 
+	The movement of the elevator is also enforced: the elevator shouldn't move up if there are floors 
+	below its current position, and it shouldn't move down if there are no requests from floors below. 
+	The order of getting to requests is therefore bottom to top. 
 */
 
 
 -- Procedure 2:
 --   TODO:  
+/* 
+	This procedure enforces that the elevator must always be moving and that
+	if there's a request from a certain floor, the elevator has to do the pickup operation. 
+	The elevator cycles between the top and bottom floors by moving up from the bottom till
+	it reaches the top and moving down from the top till it reaches the bottom,
+	without any stops. 
+*/
 
 -- Procedure 3:
 --   TODO: 
+/* 
+	This procedure makes the elevator stay on the same floor if there are no requests, 
+	and always pick up passengers on the current floor if there's a request. It also
+	enforces that the elevator does pickups more efficiently: it shouldn't change 
+	direction until all requests in its movement path (up or down) are completed. For 
+	example, if the elevator is already moving up, then it has to service all requested 
+	floor above the one it's currently on before being able to move down. 
+*/
 
 -- Procedure 4:
 --   TODO: 
+/*
+*/
 
 -- Procedure 5:
 --   TODO: 
+/*
+*/
 
 
 /*------------------------------------*\
