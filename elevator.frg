@@ -9,6 +9,7 @@ option max_tracelength 14
 \*---------------*/
 // See handout for detailed explanation of these sigs
 
+
 sig Floor {
 	above : lone Floor,
 	below : lone Floor

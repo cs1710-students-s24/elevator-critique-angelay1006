@@ -13,7 +13,15 @@ open "elevator.frg"
 --   Think about the differences between the procedures and how to best communicate them. 
 
 -- Procedure 1:
---   TODO: 
+--   TODO:
+/* This procedure makes the elevator remain on the same floor if there are no pending requests, 
+   which also implies that it should always be moving if there's at least one request. If 
+   the current floor has pending requests, the elevator must always pick up passengers. 
+   The movement of the elevator is also enforced: the elevator shouldn't move up if there are floors 
+   below its current position, and it shouldn't move down if there are no requests from floors below. 
+   The order of getting to requests is therefore bottom to top. 
+*/
+
 
 -- Procedure 2:
 --   TODO:  
