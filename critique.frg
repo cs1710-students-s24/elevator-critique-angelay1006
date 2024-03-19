@@ -223,7 +223,6 @@ test expect {
 	-- TODO: test procedure5 properties here
 	fp5: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 	stayStillWhenNoRequests5: {traces and always procedure5[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
-
 }
 
 
