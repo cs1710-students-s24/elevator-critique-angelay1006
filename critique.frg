@@ -154,30 +154,34 @@ pred forwardProgress[e: Elevator] {
 	always eventually enabled[e]
 }
 
-
+/* PROCEDURE 1 TESTS **********************************************************/
 test expect {
 	-- TODO: test procedure1 properties here
 	fp1: {traces and always procedure1[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 
 }
 
+/* PROCEDURE 2 TESTS **********************************************************/
 test expect {
 	-- TODO: test procedure2 properties here
 	fp2: {traces and always procedure2[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 
 }
 
+/* PROCEDURE 3 TESTS **********************************************************/
 test expect {
 	-- TODO: test procedure3 properties here
 	fp3: {traces and always procedure3[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 }
 
+/* PROCEDURE 4 TESTS **********************************************************/
 test expect {
 	-- TODO: test procedure4 properties here
 	fp4: {traces and always procedure4[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
 
 }
 
+/* PROCEDURE 5 TESTS **********************************************************/
 test expect {
 	-- TODO: test procedure5 properties here
 	fp5: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
