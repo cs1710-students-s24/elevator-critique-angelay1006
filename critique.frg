@@ -82,6 +82,25 @@ pred elevatorOnlyMoveWhenDoorClosed[e: Elevator] {
 	e.floor != e.floor' => e.door = Closed
 }
 
+// Property 1. Elevator shouldn't move beyond top or bottom floors
+pred elevatorCannotExceedBounds[e: Elevator] {
+    (e.floor = Top => not moveUp[e]) and (e.floor = Bottom => not moveDown[e])
+}
+
+// Property 2. Requests are only removed when serviced
+
+// Property 3. Elevator should only move to adjacent floors in one transition
+
+// Property 4. Next Request should always be a valid request if there are pending requests, 
+// or it should default to Bottom floor if there are none
+
+// Property 5. Elevator door can't be open and closed at the same time
+pred mutualExclusionOfDoorStates[e: Elevator] {
+    not (e.door = Open and e.door = Closed)
+}
+
+// Property 6. Check to make sure that elevator is properly initialized?
+
 test expect {
 	-- TODO: test overall model properties here
 	test1: {traces implies elevatorOnlyMoveWhenDoorClosed[Elevator]} for exactly 1 Elevator is theorem
