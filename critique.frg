@@ -48,11 +48,23 @@ open "elevator.frg"
 -- Procedure 4:
 --   TODO: 
 /*
+	Similarly to Procedure 3, the elevator stays on the same floor if there are no requests,
+	and will always pick up passengers from the current floor if requested. The elevator's
+	movement is directed towards the floor that is currently the next request, and won't
+	move in the direction opposite to this target. This procedure also updates when
+	the current next request is fulfilled or when new requests are made. 
 */
 
 -- Procedure 5:
 --   TODO: 
 /*
+	Procedure 5 stays on the same floor if there are no requests, and will always pick up 
+	passengers from the current floor if requested. The movement of the elevator will 
+	match the relative location of the next requested location: when the current floor
+	satisfies the next request, the next destination will be updated based on the elevator's 
+	last movement direction so it won't travel unnecessarily. For example, if the elevator's
+	last movement direction was upwards and there are requests from floors above, the 
+	next request would be updated to one of those requests, continuing an upward movement.
 */
 
 

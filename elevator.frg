@@ -268,16 +268,24 @@ pred procedure5[e: Elevator] {
 
 	always pickUpCurIfRequesting[e]
 	
+	// if nextRequest is on a floor above current, the elevator cannot move down until the next request 
+	// is no longer above it
 	(e.nextRequest in e.floor.^above) => not moveDown[e] until (e.nextRequest not in e.floor.^above)
 	(e.nextRequest in e.floor.^below) => not moveUp[e] until (e.nextRequest not in e.floor.^below)
 
+	// if there are pending requests and the current nextRequest isn't among them, then 
+	// nextRequest is updated to be one of the pending requests in next state
 	(some e.requests) and (e.nextRequest not in e.requests) => e.nextRequest' in e.requests'
 	((no e.requests) and (some e.requests')) => e.nextRequest' in e.requests'
 
 	pickUpEnabled[e] and (e.nextRequest = e.floor) => {
+		// checks elevator's last movement direction to decide how to update nextRequest
 		e.lastMove = Up => {
+			// if last move was upwards & there are reqs from above, nextRequest is updated to one
+			// of the floors above (continues upward movement)
 			some (e.requests' & e.floor.^above) => e.nextRequest' in (e.requests' & e.floor.^above)
 		} else {
+			// same for down
 			some (e.requests' & e.floor.^below) => e.nextRequest' in (e.requests' & e.floor.^below)
 		}
 	}
