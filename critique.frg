@@ -82,29 +82,45 @@ pred elevatorOnlyMoveWhenDoorClosed[e: Elevator] {
 	e.floor != e.floor' => e.door = Closed
 }
 
-// Property 1. Elevator shouldn't move beyond top or bottom floors
-pred elevatorCannotExceedBounds[e: Elevator] {
+// Property 2. Elevator shouldn't move beyond top or bottom floors
+pred elevatorWithinBounds[e: Elevator] {
     (e.floor = Top => not moveUp[e]) and (e.floor = Bottom => not moveDown[e])
 }
 
-// Property 2. Requests are only removed when serviced
+// Property 3. Requests are only removed when serviced
 
-// Property 3. Elevator should only move to adjacent floors in one transition
-
-// Property 4. Next Request should always be a valid request if there are pending requests, 
+// Property 4. Elevator should only move to adjacent floors in one transition
+pred verifyAdjacentFloor {
+	moveUp[e] implies (e.floor'.below = e.floor)
+	moveDown[e] implies (e.floor'.above = e.floor)
+}
+// Property 5. Next Request should always be a valid request if there are pending requests, 
 // or it should default to Bottom floor if there are none
 
-// Property 5. Elevator door can't be open and closed at the same time
-pred mutualExclusionOfDoorStates[e: Elevator] {
+// Property 6. Elevator door can't be open and closed at the same time
+pred mutualExclusionDoorState[e: Elevator] {
     not (e.door = Open and e.door = Closed)
 }
 
-// Property 6. Check to make sure that elevator is properly initialized?
+// Property 7. Check to make sure that elevator is properly initialized?
+
+// Property 8. If floor is in the set of requests, it must eventually be serviced. 
+pred requestEventuallyServiced {
+	all e: Elevator, f: Floor | {
+		f in e.requests => {
+			eventually {(e.floor = f and e.door = Open)}
+		}
+	}
+}
+
 
 test expect {
 	-- TODO: test overall model properties here
 	test1: {traces implies elevatorOnlyMoveWhenDoorClosed[Elevator]} for exactly 1 Elevator is theorem
-	
+	test2: {traces implies elevatorWithinBounds[Elevator]} for exactly 1 Elevator is theorem
+	test6: {traces implies mutualExclusionDoorState[Elevator]} for exactly 1 Elevator is theorem
+	test8: {traces implies requestEventuallyServiced} for exactly 1 Elevator is theorem
+
 }
 
 
