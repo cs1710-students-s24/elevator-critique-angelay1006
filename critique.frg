@@ -155,36 +155,74 @@ pred forwardProgress[e: Elevator] {
 }
 
 /* PROCEDURE 1 TESTS **********************************************************/
+pred stayStillWhenNoRequests[e: Elevator] {
+    no e.requests implies stayStill[e]
+}
+
+/*
+	Key characteristics: 
+	1. Stays still if there are no requests
+	2. Picks up passengers from current floor if requested
+	3. Can't move up if there are requests below
+*/
 test expect {
 	-- TODO: test procedure1 properties here
 	fp1: {traces and always procedure1[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
+	stayStillWhenNoRequests1: {traces and always procedure1[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
 
 }
 
 /* PROCEDURE 2 TESTS **********************************************************/
+/*
+	Key characteristics: 
+	1. Elevator always in motion
+	2. Fixed pattern of movement from bottom to top, then top to bottom
+*/
 test expect {
 	-- TODO: test procedure2 properties here
 	fp2: {traces and always procedure2[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
+	
+	// note: this is weird, should be unsat since it's never supposed to stay still
+	// but forge finds a counterexample
+	// stayStillWhenNoRequests2: {traces and always procedure2[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is unsat
 
 }
 
 /* PROCEDURE 3 TESTS **********************************************************/
+/*
+	Key characteristics: 
+	1. Stays still when no requests
+	2. Prioritizes going to floors in current direction before changing direction
+*/
 test expect {
 	-- TODO: test procedure3 properties here
 	fp3: {traces and always procedure3[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
+	stayStillWhenNoRequests3: {traces and always procedure3[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
 }
 
 /* PROCEDURE 4 TESTS **********************************************************/
+/*
+	Key characteristics: 
+	1. updates next request based on remaining requests, but doesn't consider the 
+	   elevator's last movement direction (as opposted to Proc5)
+	2. stays still when no requests
+*/
 test expect {
 	-- TODO: test procedure4 properties here
 	fp4: {traces and always procedure4[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
-
+	stayStillWhenNoRequests4: {traces and always procedure4[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
 }
 
 /* PROCEDURE 5 TESTS **********************************************************/
+/*
+	Key characteristics: 
+	1. uniquely considers the elevator's last move direction when updating requests
+	2. stays still when no requests
+*/
 test expect {
 	-- TODO: test procedure5 properties here
 	fp5: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
+	stayStillWhenNoRequests5: {traces and always procedure5[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 1 Elevator is theorem
 
 }
 
