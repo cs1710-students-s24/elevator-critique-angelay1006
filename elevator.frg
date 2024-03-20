@@ -234,7 +234,7 @@ pred procedure2[e: Elevator] {
 	not stayStill[e]
 
 	always pickUpCurIfRequesting[e]
-
+	//if we at the bottom, we do not move down until we reach the top
 	e.floor = Bottom => (not moveDown[e]) until e.floor = Top
 	e.floor = Top => (not moveUp[e]) until e.floor = Bottom
 }
