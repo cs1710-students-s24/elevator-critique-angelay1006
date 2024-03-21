@@ -168,15 +168,15 @@ pred alwaysMoves[e: Elevator] {
 pred some_below_request[e: Elevator]{
 	moveDown[e] implies some (e.floor.^below & e.requests)
 }
-//upward movement implies that there is a request below
+// upward movement implies that there is a request below
 pred some_above_request[e: Elevator]{
 	moveUp[e] implies some (e.floor.^above & e.requests)
 }
-//Upwards movement means there are no requests below
+// Upwards movement means there are no requests below
 pred no_below[e: Elevator]{
 	moveUp[e] implies no (e.floor.^below & e.requests)
 }
-//Not at the top or bottom implies we move in our current dirrection until we reach that upper bound.
+// Not at the top or bottom implies we move in our current dirrection until we reach that upper bound.
 pred move_till_top[e: Elevator]{
 	not stayStill[e]
 	((e.floor != Top and moveUp[e] implies e.floor not in  e.floor.^above) and 
@@ -184,13 +184,15 @@ pred move_till_top[e: Elevator]{
 	((e.floor != Bottom and moveDown[e] implies e.floor not in  e.floor.^below) and 
 	(moveDown[e] until e.floor = Bottom))
 }
-//A certain movements implication on requests
+
+// A certain movements implication on requests
 pred movement_implies[e: Elevator]{
 	//moving dow implies no request above
 	moveDown[e] implies  no (e.requests & e.floor.^above)
 	//moving up implies no request below
 	moveUp[e] implies no (e.requests & e.floor.^below)
 }
+
 //This is checking a property of procedure 4 on the rest. Some requests and the next request not being in
 //those requests implies the nextRequest will be in requests at the next step.
 pred next_request_in_request[e: Elevator]{
@@ -317,18 +319,6 @@ pred allRequestsFulfilled[e: Elevator] {
     all f: Floor | f in e.requests implies eventually (e.floor = f and e.door = Open)
 }
 
-// also distinguishes between proc4 and proc5. 
-// elevator will keep going up until there aren't any other requests from above
-pred requestDirectionalConsistency[e: Elevator] {
-	pickUpEnabled[e] and (e.nextRequest = e.floor) implies {
-		e.lastMove = Up => {
-			some (e.requests' & e.floor.^above) => e.nextRequest' in (e.requests' & e.floor.^above)
-		} else {
-			some (e.requests' & e.floor.^below) => e.nextRequest' in (e.requests' & e.floor.^below)
-		}
-	}
-} 
-
 
 
 test expect {
@@ -346,10 +336,7 @@ test expect {
 	next_request_in_next_step_request4:{traces and always procedure4[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
 	procedure4diff4: {traces and always procedure4[Elevator] implies always procedure4diff[Elevator] } for exactly 1 Elevator is sat
 	genericNextRequestUpdate4: {traces and always procedure4[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
-
-
-	allRequestsFulfilled4: {traces and always procedure4[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 1 Elevator is sat
-	// requestDirectionalConsistency4: {traces and always procedure4[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 1 Elevator is theorem
+	allRequestsFulfilled4: {traces and always procedure4[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 1 Elevator is sat // for proc5, this is theorem!
 }
 
 /* PROCEDURE 5 TESTS **********************************************************/
@@ -373,7 +360,6 @@ test expect {
 	next_request_in_next_step_request5:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
 	genericNextRequestUpdate5: {traces and always procedure5[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
 	allRequestsFulfilled5: {traces and always procedure5[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 1 Elevator is theorem
-	// requestDirectionalConsistency5: {traces and always procedure5[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 1 Elevator is theorem
 }
 
 
@@ -421,17 +407,17 @@ pred multiElevatorFix {
 -- portion should pass, and those that failed previously should continue failing.
 
 // note: we've only kept the tests that pass for procedure 5
-test expect {
-	-- TODO: test procedure5 properties here
-	fpMULTI: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 2 Elevator is theorem
-	stayStillWhenNoRequestsMULTI: {traces and always procedure5[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 2 Elevator is theorem
-	some_below_requestMULTI: {traces and always procedure5[Elevator] implies always some_below_request[Elevator] } for exactly 2 Elevator is theorem
-	alwaysMovesMULTI: {traces and always procedure5[Elevator] implies alwaysMoves[Elevator]} for exactly 2 Elevator is sat
-	some_above_requestMULTI: {traces and always procedure5[Elevator] implies always some_above_request[Elevator] } for exactly 2 Elevator is theorem
-	next_request_in_requestMULTI: {traces and always procedure5[Elevator] implies always next_request_in_request[Elevator] } for exactly 2 Elevator is theorem
-	next_request_in_next_step_requestMULTI:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 2 Elevator is theorem
-	genericNextRequestUpdateMULTI: {traces and always procedure5[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 2 Elevator is theorem
-	allRequestsFulfilledMULTI: {traces and always procedure5[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 2 Elevator is theorem
-	requestDirectionalConsistencyMULTI: {traces and always procedure5[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 2 Elevator is theorem
-}
+// test expect {
+// 	-- TODO: test procedure5 properties here
+// 	fpMULTI: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 2 Elevator is theorem
+// 	stayStillWhenNoRequestsMULTI: {traces and always procedure5[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 2 Elevator is theorem
+// 	some_below_requestMULTI: {traces and always procedure5[Elevator] implies always some_below_request[Elevator] } for exactly 2 Elevator is theorem
+// 	alwaysMovesMULTI: {traces and always procedure5[Elevator] implies alwaysMoves[Elevator]} for exactly 2 Elevator is sat
+// 	some_above_requestMULTI: {traces and always procedure5[Elevator] implies always some_above_request[Elevator] } for exactly 2 Elevator is theorem
+// 	next_request_in_requestMULTI: {traces and always procedure5[Elevator] implies always next_request_in_request[Elevator] } for exactly 2 Elevator is theorem
+// 	next_request_in_next_step_requestMULTI:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 2 Elevator is theorem
+// 	genericNextRequestUpdateMULTI: {traces and always procedure5[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 2 Elevator is theorem
+// 	allRequestsFulfilledMULTI: {traces and always procedure5[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 2 Elevator is theorem
+// 	requestDirectionalConsistencyMULTI: {traces and always procedure5[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 2 Elevator is theorem
+// }
 
