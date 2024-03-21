@@ -313,6 +313,26 @@ pred genericNextRequestUpdate[e: Elevator] {
     (some e.requests) and (e.nextRequest not in e.requests) => e.nextRequest' in e.requests'
 }
 
+// this predicate distinguishes between procedures 4 and 5. 
+// proc4 doesn't always satisfy this predicate (is sat)
+// for proc5, this is theorem 
+pred allRequestsFulfilled[e: Elevator] {
+    all f: Floor | f in e.requests implies eventually (e.floor = f and e.door = Open)
+}
+
+// also distinguishes between proc4 and proc5. 
+// elevator will keep going up until there aren't any other requests from above
+pred requestDirectionalConsistency[e: Elevator] {
+	pickUpEnabled[e] and (e.nextRequest = e.floor) implies {
+		e.lastMove = Up => {
+			some (e.requests' & e.floor.^above) => e.nextRequest' in (e.requests' & e.floor.^above)
+		} else {
+			some (e.requests' & e.floor.^below) => e.nextRequest' in (e.requests' & e.floor.^below)
+		}
+	}
+} 
+
+
 
 test expect {
 	-- TODO: test procedure4 properties here
@@ -329,7 +349,10 @@ test expect {
 	next_request_in_next_step_request4:{traces and always procedure4[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
 	procedure4diff4: {traces and always procedure4[Elevator] implies always procedure4diff[Elevator] } for exactly 1 Elevator is sat
 	genericNextRequestUpdate4: {traces and always procedure4[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
-	directionalNextRequestUpdate4: {traces and always procedure4[Elevator] implies directionalNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
+
+
+	allRequestsFulfilled4: {traces and always procedure4[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 1 Elevator is sat
+	requestDirectionalConsistency4: {traces and always procedure4[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 1 Elevator is theorem
 }
 
 /* PROCEDURE 5 TESTS **********************************************************/
@@ -352,7 +375,9 @@ test expect {
 	next_request_in_request5: {traces and always procedure5[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem
 	next_request_in_next_step_request5:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
 	genericNextRequestUpdate5: {traces and always procedure5[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
-	directionalNextRequestUpdate5: {traces and always procedure5[Elevator] implies directionalNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
+	
+	allRequestsFulfilled5: {traces and always procedure5[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 1 Elevator is theorem
+	requestDirectionalConsistency5: {traces and always procedure5[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 1 Elevator is theorem
 }
 
 
