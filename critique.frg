@@ -200,7 +200,17 @@ pred movement_implies[e: Elevator]{
 pred next_request_in_request[e: Elevator]{
 	(some e.requests) and (e.nextRequest not in e.requests) => e.nextRequest' in e.requests'
 	((no e.requests) and (some e.requests')) => e.nextRequest' in e.requests'
+}
 
+pred next_request_in_next_step_request[e: Elevator]{
+	moveUp[e] and e.nextRequest in e.floor.^above => not moveDown[e] until (e.nextRequest not in e.floor.^above)
+	// e.nextRequest in e.floor.^below => moveDown[e] and not moveUp[e]
+}
+
+pred  procedure4diff[e: Elevator] {
+	no e.requests
+	some e.requests'
+	e.nextRequest' in e.requests'
 }
 /*
 assuming procedure enforced at every state, and inside we */
@@ -223,6 +233,8 @@ test expect {
 	// alwaysMoves1: {traces and always procedure1[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is sat
 	//movement_implies1:  {traces and always procedure1[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem | FAILS
 	//next_request_in_request1: {traces and always procedure1[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem | FAIL
+	//next_request_in_next_step_request1:{traces and always procedure1[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
+
 
 
 }
@@ -247,6 +259,8 @@ test expect {
 	move_till_top2: {traces and always procedure2[Elevator] implies move_till_top[Elevator]} for exactly 1 Elevator is theorem
 	//movement_implies2:  {traces and always procedure2[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem | FAILS
 	//next_request_in_request2: {traces and always procedure2[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem | FAILS
+	next_request_in_next_step_request2:{traces and always procedure2[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
+	//This passing is interesting!
 	
 }
 
@@ -268,6 +282,10 @@ test expect {
 	// alwaysMoves3: {traces and always procedure3[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is unsat
 	movement_implies3:  {traces and always procedure3[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem
 	//next_request_in_request3: {traces and always procedure3[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem
+	next_request_in_next_step_request3:{traces and always procedure3[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
+	procedure4diff3: {traces and always procedure3[Elevator] implies always procedure4diff[Elevator] } for exactly 1 Elevator is sat
+
+
 
 
 }
@@ -289,12 +307,11 @@ test expect {
 	//move_till_top4: {traces and always procedure4[Elevator] implies move_till_top[Elevator]} for exactly 1 Elevator is theorem | FAILS
 	//movement_implies4:  {traces and always procedure4[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem |FAILS
 	next_request_in_request4: {traces and always procedure4[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem
-
-
-
-
 	// should also be unsat since this procedure stays still with no requests, so it should never be always moving
 	// alwaysMoves4: {traces and always procedure4[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is unsat
+	next_request_in_next_step_request4:{traces and always procedure4[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
+	procedure4diff4: {traces and always procedure4[Elevator] implies always procedure4diff[Elevator] } for exactly 1 Elevator is sat
+	
 }
 
 /* PROCEDURE 5 TESTS **********************************************************/
@@ -315,6 +332,8 @@ test expect {
 	//move_till_top5: {traces and always procedure5[Elevator] implies move_till_top[Elevator]} for exactly 1 Elevator is theorem | FAILS
 	//movement_implies5:  {traces and always procedure5[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem |FAILS
 	next_request_in_request5: {traces and always procedure5[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem
+	next_request_in_next_step_request5:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
+
 
 
 }
