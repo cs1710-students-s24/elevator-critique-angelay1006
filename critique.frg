@@ -168,7 +168,7 @@ pred alwaysMoves[e: Elevator] {
 pred some_below_request[e: Elevator]{
 	moveDown[e] implies some (e.floor.^below & e.requests)
 }
-//downwards movement implies that there is a request below
+//upward movement implies that there is a request below
 pred some_above_request[e: Elevator]{
 	moveUp[e] implies some (e.floor.^above & e.requests)
 }
@@ -176,32 +176,28 @@ pred some_above_request[e: Elevator]{
 pred no_below[e: Elevator]{
 	moveUp[e] implies no (e.floor.^below & e.requests)
 }
-
+//Not at the top or bottom implies we move in our current dirrection until we reach that upper bound.
 pred move_till_top[e: Elevator]{
-	//moveUp[e] implies e.floor  != Top
 	not stayStill[e]
-
 	((e.floor != Top and moveUp[e] implies e.floor not in  e.floor.^above) and 
 	(moveUp[e] until e.floor = Top)) or
 	((e.floor != Bottom and moveDown[e] implies e.floor not in  e.floor.^below) and 
 	(moveDown[e] until e.floor = Bottom))
-
-	// moveDown[e] implies e.floor  != Bottom  
-	// moveDown[e] until e.floor = Bottom
 }
-
+//A certain movements implication on requests
 pred movement_implies[e: Elevator]{
+	//moving dow implies no request above
 	moveDown[e] implies  no (e.requests & e.floor.^above)
+	//moving up implies no request below
 	moveUp[e] implies no (e.requests & e.floor.^below)
-	// some (e.requests & e.floor.^above) => (not moveDown[e]) until no (e.requests & e.floor.^above)
-	// some (e.requests & e.floor.^below) => (not moveUp[e]) until no (e.requests & e.floor.^below)
 }
-
+//This is checking a property of procedure 4 on the rest. Some requests and the next request not being in
+//those requests implies the nextRequest will be in requests at the next step.
 pred next_request_in_request[e: Elevator]{
 	(some e.requests) and (e.nextRequest not in e.requests) => e.nextRequest' in e.requests'
 	((no e.requests) and (some e.requests')) => e.nextRequest' in e.requests'
 }
-
+//Moving up with a request above means we do not move down until all above request are complete
 pred next_request_in_next_step_request[e: Elevator]{
 	moveUp[e] and e.nextRequest in e.floor.^above => not moveDown[e] until (e.nextRequest not in e.floor.^above)
 	// e.nextRequest in e.floor.^below => moveDown[e] and not moveUp[e]
