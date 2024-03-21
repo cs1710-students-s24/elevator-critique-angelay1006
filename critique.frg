@@ -207,7 +207,7 @@ pred next_request_in_next_step_request[e: Elevator]{
 	// e.nextRequest in e.floor.^below => moveDown[e] and not moveUp[e]
 }
 
-pred  procedure4diff[e: Elevator] {
+pred procedure4diff[e: Elevator] {
 	no e.requests
 	some e.requests'
 	e.nextRequest' in e.requests'
@@ -234,9 +234,6 @@ test expect {
 	//movement_implies1:  {traces and always procedure1[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem | FAILS
 	//next_request_in_request1: {traces and always procedure1[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem | FAIL
 	//next_request_in_next_step_request1:{traces and always procedure1[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
-
-
-
 }
 
 /* PROCEDURE 2 TESTS **********************************************************/
@@ -297,6 +294,30 @@ test expect {
 	   elevator's last movement direction (as opposted to Proc5)
 	2. stays still when no requests
 */
+
+// this test will distinguish between proc4 and proc5
+// proc4 doesn't take into consideration the elevator's last direction, so should fail as theorem for proc4?
+pred directionalNextRequestUpdate[e: Elevator] {
+    pickUp[e] implies {
+        // If lastMove was Up and there are requests above, nextRequest should be set to one of those above
+        // expected in proc5 but not in proc4
+        e.lastMove = Up implies {
+            some e.requests => some (e.requests & e.floor.^above) => e.nextRequest' in (e.requests & e.floor.^above)
+        }
+
+        -- If lastMove was Down and there are requests below, nextRequest should be set to one of those below
+        e.lastMove = Down implies {
+            some e.requests => some (e.requests & e.floor.^below) => e.nextRequest' in (e.requests & e.floor.^below)
+        }
+    }
+}
+
+// generic next request, should work for both proc4 and proc5
+pred genericNextRequestUpdate[e: Elevator] {
+    (some e.requests) and (e.nextRequest not in e.requests) => e.nextRequest' in e.requests'
+}
+
+
 test expect {
 	-- TODO: test procedure4 properties here
 	fp4: {traces and always procedure4[Elevator] implies forwardProgress[Elevator]} for exactly 1 Elevator is theorem
@@ -311,7 +332,8 @@ test expect {
 	// alwaysMoves4: {traces and always procedure4[Elevator] implies alwaysMoves[Elevator]} for exactly 1 Elevator is unsat
 	next_request_in_next_step_request4:{traces and always procedure4[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
 	procedure4diff4: {traces and always procedure4[Elevator] implies always procedure4diff[Elevator] } for exactly 1 Elevator is sat
-	
+	genericNextRequestUpdate4: {traces and always procedure4[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
+	directionalNextRequestUpdate4: {traces and always procedure4[Elevator] implies directionalNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
 }
 
 /* PROCEDURE 5 TESTS **********************************************************/
@@ -333,9 +355,8 @@ test expect {
 	//movement_implies5:  {traces and always procedure5[Elevator] implies always movement_implies[Elevator]} for exactly 1 Elevator is theorem |FAILS
 	next_request_in_request5: {traces and always procedure5[Elevator] implies always next_request_in_request[Elevator] } for exactly 1 Elevator is theorem
 	next_request_in_next_step_request5:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
-
-
-
+	genericNextRequestUpdate5: {traces and always procedure5[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
+	directionalNextRequestUpdate5: {traces and always procedure5[Elevator] implies directionalNextRequestUpdate[Elevator]} for exactly 1 Elevator is theorem
 }
 
 
