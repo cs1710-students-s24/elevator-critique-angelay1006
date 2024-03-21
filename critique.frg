@@ -285,9 +285,6 @@ test expect {
 	next_request_in_next_step_request3:{traces and always procedure3[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 1 Elevator is theorem
 	procedure4diff3: {traces and always procedure3[Elevator] implies always procedure4diff[Elevator] } for exactly 1 Elevator is sat
 
-
-
-
 }
 
 /* PROCEDURE 4 TESTS **********************************************************/
