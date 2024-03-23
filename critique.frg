@@ -392,10 +392,15 @@ pred elevatorControl {
 // what karis said: the elevator doesn't always have to be moving
 pred multiElevatorFix {
 	// If there are pending requests, at least one elevator must not be staying still
-	some e: Elevator | some e.requests => {not stayStill[e]}
+	// some e: Elevator | some e.requests => {not stayStill[e]}
 	// An elevator can stay still if it has no pending requests
-	all e: Elevator | (no e.requests) => stayStill[e]
-	some e: Elevator | some e.requests implies {some enabled[e]}
+	//all e: Elevator | (no e.requests) => stayStill[e]
+	//some e: Elevator | some e.requests implies {enabled[e]}
+	all e: Elevator | enabled[e] => always  { eventually runElevatorProcedure[e]}
+	//all e: Elevator | some e.requests implies {enabled[e]}
+	//cosntrraint enabled itself, not guaranteed they are enabled in the first state.
+	all e: Elevator | eventually {always enabled[e]}
+	//all e: Elevator | enabled[e] => always enabled[e]
 }
 
 
@@ -407,17 +412,17 @@ pred multiElevatorFix {
 -- portion should pass, and those that failed previously should continue failing.
 
 // note: we've only kept the tests that pass for procedure 5
-// test expect {
-// 	-- TODO: test procedure5 properties here
-// 	fpMULTI: {traces and always procedure5[Elevator] implies forwardProgress[Elevator]} for exactly 2 Elevator is theorem
-// 	stayStillWhenNoRequestsMULTI: {traces and always procedure5[Elevator] implies stayStillWhenNoRequests[Elevator]} for exactly 2 Elevator is theorem
-// 	some_below_requestMULTI: {traces and always procedure5[Elevator] implies always some_below_request[Elevator] } for exactly 2 Elevator is theorem
-// 	alwaysMovesMULTI: {traces and always procedure5[Elevator] implies alwaysMoves[Elevator]} for exactly 2 Elevator is sat
-// 	some_above_requestMULTI: {traces and always procedure5[Elevator] implies always some_above_request[Elevator] } for exactly 2 Elevator is theorem
-// 	next_request_in_requestMULTI: {traces and always procedure5[Elevator] implies always next_request_in_request[Elevator] } for exactly 2 Elevator is theorem
-// 	next_request_in_next_step_requestMULTI:{traces and always procedure5[Elevator] implies always next_request_in_next_step_request[Elevator] } for exactly 2 Elevator is theorem
-// 	genericNextRequestUpdateMULTI: {traces and always procedure5[Elevator] implies genericNextRequestUpdate[Elevator]} for exactly 2 Elevator is theorem
-// 	allRequestsFulfilledMULTI: {traces and always procedure5[Elevator] implies allRequestsFulfilled[Elevator]} for exactly 2 Elevator is theorem
-// 	requestDirectionalConsistencyMULTI: {traces and always procedure5[Elevator] implies requestDirectionalConsistency[Elevator]} for exactly 2 Elevator is theorem
-// }
+test expect {
+	-- TODO: test procedure5 properties here
+	fpMULTI: {elevatorControl and multiElevatorFix implies forwardProgress[Elevator]} for exactly 2 Elevator is theorem
+	stayStillWhenNoRequestsMULTI: {{elevatorControl and multiElevatorFix implies stayStillWhenNoRequests[Elevator]}} for exactly 2 Elevator is theorem
+	//some_below_requestMULTI: {{elevatorControl and multiElevatorFix implies always some_below_request[Elevator] }} for exactly 2 Elevator is theorem
+	alwaysMovesMULTI: {{elevatorControl and multiElevatorFix implies alwaysMoves[Elevator]}} for exactly 2 Elevator is sat
+	some_above_requestMULTI: {elevatorControl and multiElevatorFix implies always some_above_request[Elevator] } for exactly 2 Elevator is theorem
+	//next_request_in_requestMULTI: {elevatorControl and multiElevatorFix implies always next_request_in_request[Elevator] } for exactly 2 Elevator is theorem
+	next_request_in_next_step_requestMULTI:{elevatorControl and multiElevatorFix implies always next_request_in_next_step_request[Elevator] } for exactly 2 Elevator is theorem
+	//genericNextRequestUpdateMULTI: {elevatorControl and multiElevatorFix implies genericNextRequestUpdate[Elevator]} for exactly 2 Elevator is theorem
+	//allRequestsFulfilledMULTI: {elevatorControl and multiElevatorFix implies allRequestsFulfilled[Elevator]} for exactly 2 Elevator is theorem
+	// requestDirectionalConsistencyMULTI: {elevatorControl and multiElevatorFix implies requestDirectionalConsistency[Elevator]} for exactly 2 Elevator is theorem
+}
 
